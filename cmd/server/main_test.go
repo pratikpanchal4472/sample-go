@@ -1,42 +1,46 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	"github.com/golang/mock/gomock"
 )
 
-func TestPingEndpoint(t *testing.T) {
-	// Create a new Gin router
-	r := gin.New()
+func SetupTestServer() *Server {
+	return NewServer(8080)
+}
 
-	// Set the router to release mode
-	gin.SetMode(gin.ReleaseMode)
+func TestServer(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Define the /ping route
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "pong"})
+	server := SetupTestServer()
+
+	t.Run("Test Request for /Ping", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/ping", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		c.Request = req
+
+		server.PingHandler(c)
+
+		expectedBody := `{"message":"pong"}`
+		var expected, actual map[string]interface{}
+		json.Unmarshal([]byte(expectedBody), &expected)
+		json.Unmarshal(w.Body.Bytes(), &actual)
+
+		if !reflect.DeepEqual(expected, actual) {
+			t.Errorf("Expected Response %s but got %s", expectedBody, w.Body.String())
+		}
+		t.Log("Test Request for /Ping - SUCCESS")
 	})
-
-	// Create a new HTTP request to the /ping endpoint
-	req, err := http.NewRequest("GET", "/ping", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Create a response recorder to record the response
-	recorder := httptest.NewRecorder()
-
-	// Use the router to handle the request
-	r.ServeHTTP(recorder, req)
-
-	// Check if the status code is 200 OK
-	assert.Equal(t, http.StatusOK, recorder.Code)
-
-	// Check if the response body contains the expected message
-	expected := `{"message":"pong"}`
-	assert.Equal(t, expected, recorder.Body.String())
 }

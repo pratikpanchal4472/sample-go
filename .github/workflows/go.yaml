@@ -1,10 +1,13 @@
 name: Go
 
-on: [push]
+on: 
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,13 +29,19 @@ jobs:
       - name: Build
         run: make
 
-      - name: Tests
-        run: go test ./... -json > TestResults-${{ matrix.go-version }}.json
+      - name: Install Mockgen
+        run: go install github.com/golang/mock/mockgen@v1.6.0
+
+      - name: Unit Tests
+        run: |
+          mkdir testresults
+          go test -v -coverprofile TestCoverage.out ./... -json > ./testresults/TestResults.json
+          go tool cover -html TestCoverage.out -o ./testresults/TestCoverage.html
 
       - name: Upload Go test results
         uses: actions/upload-artifact@v3
         with:
-          name: Go-results-${{ matrix.go-version }}
-          path: TestResults-${{ matrix.go-version }}.json
+          name: Build--${{ matrix.go-version }}
+          path: ./testresults/*
 
       
