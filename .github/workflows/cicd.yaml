@@ -15,7 +15,7 @@ on:
 env:
   ARTIFACTORY_URL: ghcr.io
   ARTIFACTORY_USER: ${{ github.actor }}
-  ARTIFACTORY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ARTIFACTORY_TOKEN: ${{ secrets.CICD_TOKEN }}
 
 jobs:
   lint:
