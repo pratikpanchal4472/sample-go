@@ -39,8 +39,9 @@ func main() {
 
 func (s *Server) Start() {
 	httpServer := &http.Server{
-		Addr:    fmt.Sprintf("0.0.0.0%d", s.ListenPort),
-		Handler: s.Router,
+		Addr:              fmt.Sprintf("0.0.0.0%d", s.ListenPort),
+		Handler:           s.Router,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
