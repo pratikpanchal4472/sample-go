@@ -1,4 +1,4 @@
-name: Go
+name: Lint-Build-Test and Publish App
 
 on: 
   push:
@@ -18,12 +18,34 @@ env:
   ARTIFACTORY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.21.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      # You can test your matrix by printing the current Go version
+      - name: Display Go version
+        run: go version
+      
+      - name: Install dependencies
+        run: go get ./...
+
+      - name: Lint
+        run: make golangci
+    
   unit_tests:
       runs-on: ubuntu-latest
       strategy:
         matrix:
           go-version: [ '1.21.x' ]
-
+      needs: lint
       steps:
         - uses: actions/checkout@v4
         - name: Setup Go ${{ matrix.go-version }}
@@ -52,21 +74,11 @@ jobs:
   build_and_package:
     runs-on: ubuntu-latest
     needs: unit_tests
-    strategy:
-      matrix:
-        go-version: [ '1.21.x' ]
     defaults:
       run:
         working-directory: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v4
-        with:
-          go-version: ${{ matrix.go-version }}
-      # You can test your matrix by printing the current Go version
-      - name: Display Go version
-        run: go version
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2

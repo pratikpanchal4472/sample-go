@@ -15,7 +15,7 @@ RUN make unit-tests
 
 FROM ubuntu:22.04
 
-RUN apt update && apt-get install -y --no-install-recommneds ca-certificates
+RUN apt update && apt-get install -y --no-install-recommends ca-certificates
 
 WORKDIR /app
 
