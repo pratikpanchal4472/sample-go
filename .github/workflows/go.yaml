@@ -13,9 +13,9 @@ on:
       - main
 
 env:
-  ARTIFACTORY_URL: ${{ vars.SVC_JFROG_URL }}
+  ARTIFACTORY_URL: ${{ vars.SVC_NEXUS_URL }}
   ARTIFACTORY_USER: svc-github
-  ARTIFACTORY_TOKEN: ${{ secrets.SVC_JFROG_TOKEN }} 
+  ARTIFACTORY_TOKEN: ${{ secrets.SVC_NEXUS_PASSWORD }} 
 
 jobs:
   unit_tests:
@@ -75,12 +75,12 @@ jobs:
       
       - name: Login to Artifactory
         uses: docker/login-action@v2
-        with:
+        with: 
           registry: ${{ env.ARTIFACTORY_URL }}
           username: ${{ env.ARTIFACTORY_USER }}
           password: ${{ env.ARTIFACTORY_TOKEN }}
 
-      - name: Login to Artifactory
+      - name: Build and Publish Sample Docker Image
         uses: docker/build-push-action@v4
         with:
           context: ./
