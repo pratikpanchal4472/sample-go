@@ -20,5 +20,5 @@
 # Go workspace file
 go.work
 .vscode
-.golangci-bin
-bin
+component/.golangci-bin
+component/bin
