@@ -43,7 +43,7 @@ jobs:
         run: |
           export GOPRIVATE=github.com/pratikpanchal4472/*
           env | grep GOPRIVATE
-          git config --global url."https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com".insteadOf "https://github.com"
+          git config --global url."https://${{github.actor}}:${{secrets.CICD_TOKEN}}@github.com".insteadOf "https://github.com"
           go get ./...
 
       - name: Lint
@@ -69,7 +69,7 @@ jobs:
           run: |
             export GOPRIVATE=github.com/pratikpanchal4472/*
             env | grep GOPRIVATE
-            git config --global url."https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com".insteadOf "https://github.com"
+            git config --global url."https://${{github.actor}}:${{secrets.CICD_TOKEN}}@github.com".insteadOf "https://github.com"
             go get ./...
 
         - name: Unit Tests
@@ -112,6 +112,6 @@ jobs:
           file: ./content/Dockerfile
           push: false
           secrets: |
-            "github_token=${{ secrets.GITHUB_TOKEN }}"
+            "github_token=${{ secrets.CICD_TOKEN }}"
           tags:  ghcr.io/${{ github.repository_owner }}/samplego:latest
 
