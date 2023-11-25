@@ -12,6 +12,11 @@ on:
     branches: 
       - main
 
+defaults:
+  run:
+    working-directory: ./component
+
+
 env:
   ARTIFACTORY_URL: ghcr.io
   ARTIFACTORY_USER: ${{ github.actor }}
