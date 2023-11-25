@@ -1,4 +1,7 @@
 FROM golang:1.21.4 AS builder
+
+ARG GITHUB_TOKEN
+
 RUN apt update
 RUN apt install -y build-essential
 

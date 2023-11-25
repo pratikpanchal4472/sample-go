@@ -43,6 +43,7 @@ jobs:
         run: |
           export GOPRIVATE=github.com/pratikpanchal4472/*
           env | grep GOPRIVATE
+          git config --global url."https://${{secrets.GITHUB_TOKEN}}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
           go get ./...
 
       - name: Lint
@@ -68,6 +69,7 @@ jobs:
           run: |
             export GOPRIVATE=github.com/pratikpanchal4472/*
             env | grep GOPRIVATE
+            git config --global url."https://${{secrets.GITHUB_TOKEN}}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             go get ./...
 
         - name: Unit Tests
@@ -82,32 +84,32 @@ jobs:
             name: TestResults-${{ matrix.go-version }}
             path: ./testresults/*
 
-  # publish:
-  #   runs-on: ubuntu-latest
-  #   needs: unit_tests
-  #   defaults:
-  #     run:
-  #       working-directory: ${{ github.workspace }}
-  #   steps:
-  #     - uses: actions/checkout@v4
+  publish:
+    runs-on: ubuntu-latest
+    needs: unit_tests
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Setup Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
-  #       with:
-  #         driver: docker
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker
       
-  #     - name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v2
-  #       with: 
-  #         registry: ${{ env.ARTIFACTORY_URL }}
-  #         username: ${{ env.ARTIFACTORY_USER }}
-  #         password: ${{ env.ARTIFACTORY_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with: 
+          registry: ${{ env.ARTIFACTORY_URL }}
+          username: ${{ env.ARTIFACTORY_USER }}
+          password: ${{ env.ARTIFACTORY_TOKEN }}
 
-  #     - name: Build and Publish Sample Docker Image
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: .
-  #         file: ./Dockerfile
-  #         push: true
-  #         tags:  ghcr.io/${{ github.repository_owner }}/samplego:latest
+      - name: Build and Publish Sample Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./content
+          file: ./content/Dockerfile
+          push: false
+          tags:  ghcr.io/${{ github.repository_owner }}/samplego:latest
 
