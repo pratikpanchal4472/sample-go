@@ -37,6 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           export GOPRIVATE=github.com/pratikpanchal4472/*
+          env | grep GOPRIVATE
           go get ./...
 
       - name: Lint
