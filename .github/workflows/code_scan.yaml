@@ -35,7 +35,9 @@ jobs:
         run: go version
       
       - name: Install dependencies
-        run: go get ./...
+        run: |
+          export GOPRIVATE=github.com/pratikpanchal4472/*
+          go get ./...
 
       - name: Lint
         run: make golangci
