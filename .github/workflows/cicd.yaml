@@ -111,5 +111,7 @@ jobs:
           context: ./content
           file: ./content/Dockerfile
           push: false
+          secrets: |
+            "github_token=${{ secrets.GITHUB_TOKEN }}"
           tags:  ghcr.io/${{ github.repository_owner }}/samplego:latest
 

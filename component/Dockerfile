@@ -1,9 +1,11 @@
 FROM golang:1.21.4 AS builder
 
-ARG GITHUB_TOKEN
+RUN --mount=type=secret,id=github_token
 
 RUN apt update
 RUN apt install -y build-essential
+RUN github_token=$(cat /run/secrets/github_token) && git config --global url."https://${github_token}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+
 
 WORKDIR /app
 COPY . .
