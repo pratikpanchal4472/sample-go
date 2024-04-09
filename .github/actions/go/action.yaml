@@ -18,10 +18,12 @@ runs:
 
     - name: Print Environment
       run: make golangci
+      shell: bash
 
     # You can test your matrix by printing the current Go version
     - name: Display Go version
       run: go version
+      shell: bash
     
     - name: Install dependencies
       working-directory: ./component
@@ -30,6 +32,8 @@ runs:
       run: |
         git config --global url."https://${{env.ACTOR}}:${{env.CICD_TOKEN}}@github.com".insteadOf "https://github.com"
         go get ./...
+      shell: bash
 
     - name: Lint
       run: make golangci
+      shell: bash
