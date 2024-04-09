@@ -17,7 +17,8 @@ runs:
         go-version: ${{ env.go-version }}
 
     - name: Print Environment
-      run: make golangci
+      run: |
+        echo "${{env.GOPRIVATE}}"
       shell: bash
 
     # You can test your matrix by printing the current Go version
@@ -32,8 +33,10 @@ runs:
       run: |
         git config --global url."https://${{env.ACTOR}}:${{env.CICD_TOKEN}}@github.com".insteadOf "https://github.com"
         go get ./...
+        echo "${{env.GOPRIVATE}}"
       shell: bash
 
     - name: Lint
+      working-directory: ./component
       run: make golangci
       shell: bash
