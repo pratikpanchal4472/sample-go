@@ -1,0 +1,43 @@
+name: Lint-Build-Test and Publish App
+
+on: 
+  workflow_dispatch:
+    inputs:
+      username:
+        description: Username
+        type: string
+        required: true
+      os:
+        description: OS
+        type: string
+        required: true
+
+
+env:
+  GO_VERSION: '1.21.x'
+  GOPRIVATE: 'github.com/pratikpanchal4472/*'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.21.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Go Composite
+        uses: ./.github/actions/go
+        env:
+            GO_VERSION: ${{env.GO_VERSION}}
+            ACTOR: ${{github.actor}}
+            CICD_TOKEN: ${{secrets.CICD_TOKEN}}
+            GOPRIVATE: ${{env.GOPRIVATE}}
+        with:
+          username: ${{ inputs.username }}
+          os: ${{ inputs.os }}
+      
+      
+    
+

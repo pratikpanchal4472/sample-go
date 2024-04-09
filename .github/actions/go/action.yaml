@@ -1,0 +1,35 @@
+name: GO Linting
+
+inputs:
+  username:
+    description: Username
+    type: string
+  os:
+    description: OS
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Go ${{ env.go-version }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.go-version }}
+
+    - name: Print Environment
+      run: make golangci
+
+    # You can test your matrix by printing the current Go version
+    - name: Display Go version
+      run: go version
+    
+    - name: Install dependencies
+      working-directory: ./component
+      env:
+        GOPRIVATE: ${{env.GOPRIVATE}}
+      run: |
+        git config --global url."https://${{env.ACTOR}}:${{env.CICD_TOKEN}}@github.com".insteadOf "https://github.com"
+        go get ./...
+
+    - name: Lint
+      run: make golangci
