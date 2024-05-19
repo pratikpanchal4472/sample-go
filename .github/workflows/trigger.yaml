@@ -62,3 +62,16 @@ jobs:
     steps:
       - name: Print My job
         run: echo "Hello job3"
+
+  job4:
+    name: Job 4 executes after job2point5 but always if job2point5 fails.
+    runs-on: ubuntu-latest
+    if: always()
+    needs: 
+      - init
+      - job2
+      - job2point5
+      - job3
+    steps:
+      - name: Print My job
+        run: echo "Hello job4"
