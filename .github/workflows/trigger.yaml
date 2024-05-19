@@ -6,21 +6,22 @@ on:
       os:
         description: OS
         type: choice
+        required: true
         default: 'ubuntu'
         options: 
           - windows
           - ubuntu
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.os }}
+  group: ${{ github.workflow }}-${{  github.event.inputs.os  }}
 
-run-name: Run trigger for OS ${{ inputs.os }}
+run-name: Run trigger for OS ${{ github.event.inputs.os }}
 
 env:
   GO_VERSION: '1.21.x'
   GOPRIVATE: 'github.com/pratikpanchal4472/*'
-  CICD_TOKEN: ${{secrets.CICD_TOKEN}}
-  ACTOR: ${{github.actor}}
+  CICD_TOKEN: ${{ secrets.CICD_TOKEN }}
+  ACTOR: ${{ github.actor }}
 
 jobs:
   init:
