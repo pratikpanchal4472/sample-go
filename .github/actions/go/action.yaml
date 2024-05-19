@@ -1,9 +1,6 @@
 name: GO Linting
 
 inputs:
-  username:
-    description: Username
-    type: string
   os:
     description: OS
     type: string
@@ -18,7 +15,9 @@ runs:
 
     - name: Print Environment
       run: |
-        echo "${{env.GOPRIVATE}}"
+        echo "${{ env.GOPRIVATE }}"
+        echo "${{ inputs.os }}"
+        echo "${{ env.INPUT_GOPRIVATE }}"
       shell: bash
 
     # You can test your matrix by printing the current Go version
